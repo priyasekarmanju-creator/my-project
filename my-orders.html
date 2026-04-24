@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Orders | Aura Beauty</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root { --purple: #632e8a; --gold: #b89655; --bg: #f9f9fb; }
+        body { margin: 0; font-family: 'Outfit', sans-serif; background: var(--bg); }
+
+        /* HEADER */
+        .header {
+            height: 80px; background: white; display: flex; align-items: center;
+            padding: 0 50px; border-bottom: 1px solid #eee; position: sticky; top: 0; z-index: 100;
+        }
+        .logo { font-size: 24px; font-family: 'Playfair Display'; color: var(--purple); text-decoration: none; }
+        .logo span { color: var(--gold); }
+
+        .container { max-width: 900px; margin: 40px auto; padding: 20px; }
+        h2 { font-family: 'Playfair Display'; color: var(--purple); margin-bottom: 30px; }
+
+        .order-card {
+            background: white; border-radius: 15px; padding: 20px; margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-left: 5px solid var(--gold);
+        }
+        .order-header { display: flex; justify-content: space-between; border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 15px; }
+        .order-id { font-weight: 600; color: var(--purple); }
+        .order-date { color: #888; font-size: 14px; }
+
+        .product-list { display: flex; flex-direction: column; gap: 10px; }
+        .product-item { display: flex; justify-content: space-between; align-items: center; }
+        .product-info { display: flex; align-items: center; gap: 10px; }
+        .product-info img { width: 50px; height: 50px; border-radius: 8px; object-fit: cover; }
+
+        .order-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 15px; padding-top: 15px; border-top: 1px dashed #ddd; }
+        .status-badge { background: #e8f5e9; color: #2e7d32; padding: 5px 15px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+        .total-amt { font-size: 18px; font-weight: 700; color: var(--purple); }
+
+        .empty-state { text-align: center; padding: 100px 20px; }
+        .empty-state i { font-size: 60px; color: #ccc; margin-bottom: 20px; }
+        .btn-shop { background: var(--purple); color: white; border: none; padding: 12px 30px; border-radius: 10px; cursor: pointer; text-decoration: none; display: inline-block; margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <a href="index.html" class="logo"><span>Aura</span> Beauty</a>
+</header>
+
+<div class="container">
+    <h2><i class="fa-solid fa-box-open"></i> My Orders</h2>
+    <div id="orders-container"></div>
+</div>
+
+<script>
+    function loadOrders() {
+        const container = document.getElementById('orders-container');
+        
+        // Retrieve data from 'aura_orders' key in local storage
+        const orders = JSON.parse(localStorage.getItem('aura_orders')) || [];
+
+        // Check if there are no orders
+        if (orders.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <i class="fa-solid fa-bag-shopping"></i>
+                    <h3>No orders yet!</h3>
+                    <p>Looks like you haven't made any purchases yet.</p>
+                    <a href="index.html" class="btn-shop">Start Shopping</a>
+                </div>
+            `;
+            return;
+        }
+
+        // Render orders in reverse order to show the latest first
+        container.innerHTML = orders.reverse().map(order => `
+            <div class="order-card">
+                <div class="order-header">
+                    <div>
+                        <span class="order-id">Order ID: #${order.id}</span>
+                        <div class="order-date">Placed on: ${order.date}</div>
+                    </div>
+                    <span class="status-badge">Processing</span>
+                </div>
+                <div class="product-list">
+                    ${order.items.map(item => `
+                        <div class="product-item">
+                            <div class="product-info">
+                                <img src="${item.img}" alt="${item.name}">
+                                <span>${item.name}</span>
+                            </div>
+                            <span>₹${item.price}</span>
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="order-footer">
+                    <span>Total Amount:</span>
+                    <span class="total-amt">₹${order.total}</span>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // Load orders once the window has fully loaded
+    window.onload = loadOrders;
+</script>
+
+</body>
+</html>

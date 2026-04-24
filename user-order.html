@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete Your Order | Aura Beauty</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        :root {
+            --aura-purple: #632e8a;
+            --aura-gold: #b89655;
+            --bg: #f8f9ff;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .order-container {
+            background: white;
+            width: 90%;
+            max-width: 500px;
+            padding: 30px;
+            border-radius: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            border: 1px solid #eee;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .header h2 { color: var(--aura-purple); margin-bottom: 5px; }
+        .header p { color: #888; font-size: 14px; }
+
+        /* Product Summary Box */
+        .summary-box {
+            background: #fdfaf5;
+            border: 1px dashed var(--aura-gold);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .summary-box h4 { margin: 0; color: var(--aura-purple); }
+        .summary-box span { font-weight: bold; color: var(--aura-gold); font-size: 18px; }
+
+        /* Form Styling */
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 5px; color: #555; }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 14px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input:focus { border-color: var(--aura-purple); }
+
+        .confirm-btn {
+            width: 100%;
+            background: var(--aura-purple);
+            color: white;
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: 0.3s;
+        }
+
+        .confirm-btn:hover { background: #4a1f69; transform: translateY(-2px); }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 15px;
+            text-decoration: none;
+            color: #888;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="order-container">
+    <div class="header">
+        <h2>Checkout</h2>
+        <p>Confirm your glowing details</p>
+    </div>
+
+    <div class="summary-box">
+        <div>
+            <p style="font-size: 12px; margin: 0; color: #888;">Selected Item</p>
+            <h4 id="displayProductName">Loading...</h4>
+        </div>
+        <span id="displayProductPrice">₹0</span>
+    </div>
+
+    <form id="orderForm">
+        <div class="form-group">
+            <label>Customer Name</label>
+            <input type="text" id="custName" value="Priya" required>
+        </div>
+
+        <div class="form-group">
+            <label>Delivery Address</label>
+            <textarea id="address" rows="3" placeholder="Enter your full address" required></textarea>
+        </div>
+
+        <div class="form-group">
+            <label>Phone Number</label>
+            <input type="tel" id="phone" placeholder="98765 43210" required>
+        </div>
+
+        <div class="form-group">
+            <label>Payment Method</label>
+            <select id="payment">
+                <option value="COD">Cash on Delivery</option>
+                <option value="UPI">UPI / GPay</option>
+                <option value="Card">Credit/Debit Card</option>
+            </select>
+        </div>
+
+        <button type="submit" class="confirm-btn">Confirm Order</button>
+    </form>
+
+    <a href="home.html" class="back-link"><i class="fa-solid fa-arrow-left"></i> Back to Shop</a>
+</div>
+
+<script>
+    // 1. Get Product ID from URL (e.g., user-order.html?id=101)
+    const urlParams = new URLSearchParams(window.location.search);
+    const productId = urlParams.get('id');
+
+    // 2. Fetch the specific product details to show on page
+    async function fetchOrderDetails() {
+        if(!productId) {
+            alert("No product selected!");
+            window.location.href = "home.html";
+            return;
+        }
+
+        try {
+            // Intha URL unga backend API kooda match aaganum
+            const res = await fetch(`http://localhost:8080/products/${productId}`);
+            const product = await res.json();
+            
+            document.getElementById("displayProductName").innerText = product.name;
+            document.getElementById("displayProductPrice").innerText = "₹" + product.price;
+        } catch (err) {
+            // Fallback mock data for demo
+            document.getElementById("displayProductName").innerText = "Aura Glow Kit";
+            document.getElementById("displayProductPrice").innerText = "₹1200";
+        }
+    }
+
+    // 3. Submit Order to Backend
+    document.getElementById("orderForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const orderData = {
+            productName: document.getElementById("displayProductName").innerText,
+            price: document.getElementById("displayProductPrice").innerText.replace('₹', ''),
+            customerName: document.getElementById("custName").value,
+            address: document.getElementById("address").value,
+            phone: document.getElementById("phone").value,
+            status: "Ordered"
+        };
+
+        try {
+            const response = await fetch("http://localhost:8080/api/order", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(orderData)
+            });
+
+            if(response.ok) {
+                alert("Order Placed Successfully! Your glow is on the way. ✨");
+                window.location.href = "home.html"; // Redirect back
+            }
+        } catch (error) {
+            console.error("Error:", error);
+            alert("Order saved locally (Demo Mode)");
+        }
+    });
+
+    fetchOrderDetails();
+</script>
+
+</body>
+</html>

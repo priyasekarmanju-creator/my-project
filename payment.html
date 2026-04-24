@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Payment - Aura</title>
+
+<style>
+body{
+font-family:Poppins;
+background:#FCF9FF;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+}
+
+.box{
+background:white;
+padding:30px;
+border-radius:12px;
+width:350px;
+box-shadow:0 5px 15px rgba(0,0,0,0.1);
+}
+
+h2{
+color:#632E8A;
+text-align:center;
+}
+
+input{
+width:100%;
+padding:10px;
+margin:8px 0;
+border:1px solid #ddd;
+border-radius:6px;
+}
+
+button{
+width:100%;
+padding:12px;
+background:#632E8A;
+color:white;
+border:none;
+border-radius:6px;
+cursor:pointer;
+margin-top:10px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+<h2>Payment</h2>
+
+<input type="text" placeholder="Card Number">
+<input type="text" placeholder="Card Holder Name">
+<input type="text" placeholder="Expiry Date">
+<input type="text" placeholder="CVV">
+
+<button onclick="pay()">Pay Now</button>
+</div>
+
+<script>
+function pay(){
+
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+let orders = JSON.parse(localStorage.getItem("orders")) || [];
+
+orders.push({
+items:cart,
+date:new Date().toLocaleString()
+});
+
+localStorage.setItem("orders",JSON.stringify(orders));
+localStorage.removeItem("cart");
+
+alert("Payment Successful");
+window.location="order.html";
+}
+</script>
+
+</body>
+</html>

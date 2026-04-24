@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aura Beauty | Royal Checkout</title>
+<style>
+    /* Aura Purple & Gold Theme */
+    :root {
+        --aura-purple: #4B0082; /* Deep Royal Purple */
+        --aura-gold: #D4AF37;   /* Metallic Gold */
+        --light-purple: #f3e5f5;
+        --dark-gold: #B8860B;
+        --white: #ffffff;
+    }
+
+    body {
+        font-family: 'Playfair Display', serif; /* Classic font for luxury */
+        background: linear-gradient(135deg, #2e004f 0%, #4B0082 100%);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        margin: 0;
+        color: #333;
+    }
+
+    .checkout-box {
+        background: var(--white);
+        padding: 40px;
+        border-radius: 15px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+        width: 400px;
+        border: 2px solid var(--aura-gold); /* Gold border for the box */
+        position: relative;
+    }
+
+    h2 { 
+        text-align: center; 
+        margin-bottom: 30px; 
+        color: var(--aura-purple);
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        border-bottom: 2px solid var(--aura-gold);
+        padding-bottom: 10px;
+    }
+
+    #cart-list {
+        background: var(--light-purple);
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        border-left: 4px solid var(--aura-gold);
+    }
+
+    input {
+        width: 100%;
+        padding: 12px;
+        margin: 12px 0;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        font-size: 14px;
+        box-sizing: border-box;
+        transition: 0.3s;
+    }
+
+    input:focus {
+        outline: none;
+        border-color: var(--aura-purple);
+        box-shadow: 0 0 8px rgba(75, 0, 130, 0.2);
+    }
+
+    button {
+        width: 100%;
+        padding: 15px;
+        border: none;
+        background: linear-gradient(45deg, var(--aura-gold), var(--dark-gold));
+        color: white;
+        font-size: 16px;
+        font-weight: bold;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 15px;
+        transition: 0.4s;
+        text-transform: uppercase;
+        box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+    }
+
+    button:hover { 
+        background: linear-gradient(45deg, var(--dark-gold), var(--aura-gold));
+        transform: scale(1.02);
+        box-shadow: 0 6px 20px rgba(212, 175, 55, 0.5);
+    }
+
+    .cart-item { 
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 8px; 
+        font-size: 15px; 
+        color: var(--aura-purple);
+        font-weight: 500;
+    }
+
+    .total-amount {
+        display: block;
+        margin-top: 10px;
+        padding-top: 10px;
+        border-top: 1px solid var(--aura-gold);
+        font-size: 18px;
+        color: #000;
+        text-align: right;
+    }
+
+    .order-success {
+        background: #fff;
+        color: var(--aura-purple);
+        padding: 15px;
+        border-radius: 8px;
+        margin-top: 20px;
+        font-size: 14px;
+        border: 1px solid var(--aura-gold);
+        text-align: center;
+        line-height: 1.6;
+    }
+
+    /* Decorative Gold Aura Text */
+    .brand-tag {
+        display: block;
+        text-align: center;
+        font-size: 12px;
+        color: var(--aura-gold);
+        margin-top: -25px;
+        margin-bottom: 20px;
+        font-style: italic;
+    }
+</style>
+</head>
+<body>
+
+<div class="checkout-box">
+    <h2>AURA</h2>
+    <span class="brand-tag">Luxury Beauty Redefined</span>
+    
+    <div id="cart-list"></div>
+    
+    <input type="text" id="name" placeholder="Your Majestic Name">
+    <input type="text" id="address" placeholder="Delivery Mansion Address">
+    
+    <button onclick="placeOrder()">Place Your Royal Order</button>
+    
+    <div id="order-msg"></div>
+</div>
+
+<script>
+let cart = JSON.parse(localStorage.getItem("cart")) || [
+    { name: "Gold Radiance Cream", price: 1250, quantity: 1 },
+    { name: "Purple Velvet Lipstick", price: 899, quantity: 1 }
+];
+
+function showCart() {
+    const cartDiv = document.getElementById("cart-list");
+    cartDiv.innerHTML = "<p style='margin-top:0; font-weight:bold; color:var(--aura-purple);'>Your Selection:</p>";
+    
+    cart.forEach(item => {
+        cartDiv.innerHTML += `
+            <div class="cart-item">
+                <span>${item.name}</span>
+                <span>₹${item.price * item.quantity}</span>
+            </div>`;
+    });
+    
+    const total = cart.reduce((sum, i) => sum + i.price * i.quantity, 0);
+    cartDiv.innerHTML += `<div class="total-amount"><strong>Total: ₹${total}</strong></div>`;
+}
+
+function placeOrder() {
+    const name = document.getElementById("name").value.trim();
+    const address = document.getElementById("address").value.trim();
+    
+    if(!name || !address) {
+        alert("Please provide details for your royal delivery!");
+        return;
+    }
+    
+    const orderId = "AURA-GOLD-" + Math.floor(100000 + Math.random() * 900000);
+    document.getElementById("order-msg").innerHTML = `
+        <div class="order-success">
+            ✨ <b>Order Placed, Your Highness!</b> ✨<br>
+            ID: <b>${orderId}</b><br>
+            Preparing your aura glow...
+        </div>
+    `;
+    
+    localStorage.removeItem("cart");
+}
+
+showCart();
+</script>
+
+</body>
+</html>

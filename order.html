@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Checkout | Aura Beauty</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root { --aura-purple: #632e8a; --aura-gold: #b89655; }
+        body { font-family: 'Outfit', sans-serif; background: #f8f9ff; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .box { background: white; width: 400px; padding: 30px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        .summary { background: #fdfaf5; border: 1px dashed var(--aura-gold); padding: 15px; border-radius: 15px; margin-bottom: 20px; display: flex; justify-content: space-between; }
+        input, textarea { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box; outline: none; }
+        input:focus { border-color: var(--aura-purple); }
+        .btn { width: 100%; background: var(--aura-purple); color: white; padding: 15px; border: none; border-radius: 15px; font-weight: 600; cursor: pointer; transition: 0.3s; }
+        .btn:hover { opacity: 0.9; transform: translateY(-2px); }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h2 style="color: var(--aura-purple); text-align: center;">Checkout</h2>
+        <div class="summary">
+            <span id="prodName">Product</span>
+            <span id="prodPrice" style="color: var(--aura-gold); font-weight: bold;">₹0</span>
+        </div>
+        <form id="orderForm">
+            <input type="text" id="custName" placeholder="Full Name" required>
+            <textarea id="address" placeholder="Shipping Address" required></textarea>
+            <input type="tel" id="phone" placeholder="Phone Number" required>
+            <button type="submit" class="btn">Confirm Order</button>
+        </form>
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const nameParam = params.get('name') || "Aura Product";
+        const priceParam = params.get('price') || "0";
+
+        document.getElementById('prodName').innerText = nameParam;
+        document.getElementById('prodPrice').innerText = "₹" + priceParam;
+
+        document.getElementById("orderForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            // Prepare order data for PostgreSQL
+            const orderData = {
+                customerName: document.getElementById("custName").value,
+                address: document.getElementById("address").value,
+                phone: document.getElementById("phone").value,
+                productName: nameParam,
+                price: parseInt(priceParam)
+            };
+
+            try {
+                // Sending data to your backend API
+                const response = await fetch('http://localhost:3000/api/orders', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(orderData)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    alert("Order Placed Successfully in Database! ✨");
+                    window.location.href = "my-orders.html";
+                } else {
+                    alert("Order failed: " + result.message);
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                alert("Could not connect to the server.");
+            }
+        });
+    </script>
+</body>
+</html>

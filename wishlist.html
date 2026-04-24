@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aura Beauty | My Wishlist</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root { --purple: #632e8a; --gold: #b89655; --bg: #f9f9fb; }
+        body { font-family: 'Outfit', sans-serif; background: var(--bg); padding: 50px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 30px; margin-top: 30px; }
+        
+        .card { 
+            background: white; padding: 15px; border-radius: 20px; border: 1px solid #eee; 
+            text-align: center; position: relative;
+        }
+        .card img { width: 100%; height: 230px; object-fit: cover; border-radius: 15px; }
+        .price { color: var(--gold); font-weight: 600; font-size: 18px; margin: 10px 0; }
+        
+        .remove-btn { 
+            position: absolute; top: 15px; right: 15px; 
+            background: #ffeded; border: none; color: #e74c3c;
+            width: 30px; height: 30px; border-radius: 50%; cursor: pointer;
+        }
+        
+        .empty-msg { text-align: center; margin-top: 100px; color: #888; }
+        .back-link { color: var(--purple); text-decoration: none; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <a href="index.html" class="back-link"><i class="fa fa-arrow-left"></i> Back to Shop</a>
+    <h2 style="font-family:'Playfair Display'; color:var(--purple); margin-top: 20px;">My Saved Items</h2>
+
+    <div id="wishlist-grid" class="grid"></div>
+
+    <script>
+        // Index page-la iruntha athe product list ingayum irukkanum (Data consistency)
+        const products = [];
+        const images = [
+            "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=400",
+            "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=400",
+            "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400",
+            "https://images.unsplash.com/photo-1617155093730-a8bf47be7921?w=400",
+            "https://images.unsplash.com/photo-1596462502278-27bfdc4033c8?w=400",
+            "https://images.unsplash.com/photo-1612817288484-6f916006741a?w=400"
+        ];
+
+        for(let i=1; i<=55; i++){
+            products.push({
+                id: i,
+                name: `Aura Skin Serum v${i}`,
+                price: 999 + (i * 15),
+                img: images[i % images.length]
+            });
+        }
+
+        // Wishlist IDs-ah localStorage-la irunthu edukrom
+        let wishlistIDs = JSON.parse(localStorage.getItem('aura_wishlist')) || [];
+
+        function renderWishlist() {
+            const container = document.getElementById('wishlist-grid');
+            
+            // Wishlist-la iruntha IDs-ah vachu product details-ah filter panrom
+            const wishItems = products.filter(p => wishlistIDs.includes(p.id));
+
+            if(wishItems.length === 0) {
+                container.innerHTML = `<div class="empty-msg"><h3>Your wishlist is empty!</h3><p>Go add some glow to your life ✨</p></div>`;
+                return;
+            }
+
+            container.innerHTML = wishItems.map(p => `
+                <div class="card">
+                    <button class="remove-btn" onclick="removeFromWishlist(${p.id})">
+                        <i class="fa fa-trash"></i>
+                    </button>
+                    <img src="${p.img}">
+                    <h3>${p.name}</h3>
+                    <div class="price">₹${p.price.toLocaleString()}</div>
+                </div>
+            `).join('');
+        }
+
+        function removeFromWishlist(id) {
+            wishlistIDs = wishlistIDs.filter(itemID => itemID !== id);
+            localStorage.setItem('aura_wishlist', JSON.stringify(wishlistIDs));
+            renderWishlist();
+        }
+
+        window.onload = renderWishlist;
+    </script>
+</body>
+</html>

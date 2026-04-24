@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aura Beauty | Admin Portal</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <script>
+        // ✅ FIXED: Check both "userRole" and "role" keys for compatibility
+        const role = localStorage.getItem("userRole") || localStorage.getItem("role");
+        if (!role || role !== "ADMIN") { 
+            window.location.href = "login.html"; 
+        }
+    </script>
+
+    <style>
+        :root { 
+            --purple: #632e8a; 
+            --gold: #b89655; 
+            --bg: #fdfaf5; 
+            --white: #ffffff; 
+        }
+
+        body { 
+            margin: 0; font-family: 'Outfit', sans-serif; background: var(--bg); color: #333;
+            background-image: radial-gradient(circle at 90% 10%, rgba(184, 150, 85, 0.05) 0%, transparent 40%);
+        }
+
+        nav {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 15px 8%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 30px rgba(0,0,0,0.03);
+            position: sticky; top: 0; z-index: 1000;
+        }
+
+        .logo { font-family: 'Playfair Display'; font-size: 28px; text-decoration: none; color: var(--purple); }
+        .logo span { color: var(--gold); }
+
+        .nav-links { display: flex; gap: 40px; }
+        .nav-links a { text-decoration: none; color: #555; font-weight: 500; font-size: 15px; transition: 0.3s; }
+        .nav-links a:hover { color: var(--gold); }
+
+        .container { padding: 40px 8%; max-width: 1400px; margin: auto; }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+
+        .stat-card {
+            background: var(--white);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.02);
+            text-align: center;
+            border: 1px solid rgba(0,0,0,0.03);
+        }
+
+        .stat-card h3 { font-size: 28px; margin: 10px 0; color: var(--purple); }
+        .stat-card p { color: #888; text-transform: uppercase; font-size: 12px; letter-spacing: 1px; }
+
+        .section-box {
+            background: var(--white);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.02);
+            margin-bottom: 40px;
+        }
+
+        h2 { font-family: 'Playfair Display'; color: #1e1e1e; margin-bottom: 20px; }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th { text-align: left; padding: 15px; border-bottom: 2px solid var(--bg); color: #888; font-size: 13px; }
+        td { padding: 15px; border-bottom: 1px solid #f9f9f9; font-size: 14px; }
+
+        .badge { background: #fff9eb; color: var(--gold); padding: 4px 12px; border-radius: 50px; font-size: 11px; font-weight: 600; }
+        
+        .btn-delete { color: #ff4b5c; cursor: pointer; border: none; background: none; font-size: 16px; }
+        .btn-delete:hover { transform: scale(1.1); }
+
+        .logout-btn {
+            background: none; border: 1.5px solid #dcdcdc; padding: 8px 20px;
+            border-radius: 50px; font-weight: 600; cursor: pointer; color: #666; transition: 0.3s;
+        }
+        .logout-btn:hover { border-color: #ff4b5c; color: #ff4b5c; }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="#" class="logo"><span>Aura</span> Beauty</a>
+        <div class="nav-links">
+            <a href="category.html">Categories</a>
+            <a href="admin-orders.html">Orders</a>
+            <a href="customers.html">Customers</a>
+            <a href="add-product.html">Add Product</a>
+        </div>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+    </nav>
+
+    <div class="container">
+        <div class="welcome-header" style="margin-bottom: 30px;">
+            <h1>Welcome, <span id="adminName" style="color: var(--purple);">Admin</span></h1>
+            <p>Here is what's happening with Aura Beauty today.</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div style="color: var(--gold); font-size: 20px;"><i class="fa-solid fa-coins"></i></div>
+                <h3 id="sales">₹0</h3>
+                <p>Total Revenue</p>
+            </div>
+            <div class="stat-card">
+                <div style="color: var(--gold); font-size: 20px;"><i class="fa-solid fa-truck-fast"></i></div>
+                <h3 id="orders-count">0</h3>
+                <p>Total Orders</p>
+            </div>
+            <div class="stat-card">
+                <div style="color: var(--gold); font-size: 20px;"><i class="fa-solid fa-users"></i></div>
+                <h3 id="users-count">0</h3>
+                <p>Customers</p>
+            </div>
+        </div>
+
+        <div class="section-box">
+            <h2>Recent Orders</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Customer</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="order-table-body"></tbody>
+            </table>
+        </div>
+
+        <div class="section-box">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h2>Manage Products</h2>
+                <button onclick="window.location.href='add-product.html'" style="background: var(--purple); color: white; border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer;">+ New Product</button>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Category</th>
+                        <th>Price</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="product-table-body"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // ✅ FIXED: Read both "userName" and "username" keys for compatibility
+        const storedName = localStorage.getItem("userName") || localStorage.getItem("username") || "Admin";
+        document.getElementById('adminName').innerText = storedName;
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = "login.html";
+        }
+
+        async function initDashboard() {
+            try {
+                // 1. Fetch Orders & Revenue
+                const orderRes = await fetch('http://localhost:8080/api/order');
+                const orders = await orderRes.json();
+                
+                document.getElementById('orders-count').innerText = orders.length;
+                const totalRevenue = orders.reduce((sum, o) => sum + (o.price || 0), 0);
+                document.getElementById('sales').innerText = '₹' + totalRevenue.toLocaleString();
+
+                // Populate Recent Orders
+                const orderTable = document.getElementById('order-table-body');
+                orders.slice(-5).reverse().forEach(o => {
+                    orderTable.innerHTML += `
+                        <tr>
+                            <td>#${o.id}</td>
+                            <td>${o.customerName || 'User'}</td>
+                            <td>₹${o.price}</td>
+                            <td><span class="badge">PROCESSING</span></td>
+                        </tr>
+                    `;
+                });
+
+                // 2. Fetch Products
+                const prodRes = await fetch('http://localhost:8080/api/products');
+                const products = await prodRes.json();
+                const productTable = document.getElementById('product-table-body');
+                
+                products.forEach(p => {
+                    productTable.innerHTML += `
+                        <tr id="prod-${p.id}">
+                            <td style="font-weight:600;">${p.name}</td>
+                            <td>${p.category || 'General'}</td>
+                            <td>₹${p.price}</td>
+                            <td>
+                                <button class="btn-delete" onclick="deleteProduct(${p.id})"><i class="fa-solid fa-trash-can"></i></button>
+                            </td>
+                        </tr>
+                    `;
+                });
+
+                // 3. Fetch User Count
+                const userRes = await fetch('http://localhost:8080/api/user/all');
+                if(userRes.ok) {
+                    const users = await userRes.json();
+                    document.getElementById('users-count').innerText = users.length;
+                }
+
+            } catch (err) {
+                console.error("Data Fetch Error:", err);
+            }
+        }
+
+        async function deleteProduct(id) {
+            if(confirm("Are you sure you want to delete this product?")) {
+                const res = await fetch(`http://localhost:8080/api/products/delete/${id}`, { method: 'DELETE' });
+                if(res.ok) {
+                    document.getElementById(`prod-${id}`).remove();
+                    alert("Product Deleted!");
+                }
+            }
+        }
+
+        initDashboard();
+    </script>
+</body>
+</html>

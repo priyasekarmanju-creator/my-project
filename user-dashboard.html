@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Account | Aura Beauty</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <style>
+        :root { --aura-purple: #6a3093; --aura-gold: #c5a059; --light-pink: #fdf6ff; }
+        body { margin: 0; font-family: 'Outfit', sans-serif; background: #fcfcfc; color: #333; }
+        
+        /* Navbar */
+        .nav { background: white; padding: 20px 5%; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .logo { font-family: 'Playfair Display'; font-size: 24px; color: var(--aura-purple); text-decoration: none; font-weight: bold; }
+
+        .container { max-width: 1100px; margin: 40px auto; padding: 0 20px; display: grid; grid-template-columns: 280px 1fr; gap: 30px; }
+
+        /* User Sidebar */
+        .user-sidebar { background: white; border-radius: 20px; padding: 25px; box-shadow: 0 5px 20px rgba(0,0,0,0.03); height: fit-content; }
+        .user-info { text-align: center; margin-bottom: 30px; border-bottom: 1px solid #eee; padding-bottom: 20px; }
+        .user-info i { font-size: 50px; color: var(--aura-purple); background: var(--light-pink); padding: 20px; border-radius: 50%; }
+        .user-info h3 { margin: 15px 0 5px; font-family: 'Playfair Display'; }
+        
+        .side-menu { list-style: none; padding: 0; }
+        .side-menu a { text-decoration: none; color: #666; display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 10px; transition: 0.3s; margin-bottom: 5px; }
+        .side-menu a:hover, .side-menu a.active { background: var(--aura-purple); color: white; }
+
+        /* Dashboard Content */
+        .welcome-msg { background: linear-gradient(135deg, var(--aura-purple), #a044ff); color: white; padding: 30px; border-radius: 20px; margin-bottom: 30px; }
+        .welcome-msg h1 { margin: 0; font-family: 'Playfair Display'; }
+
+        .user-cards { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+        .u-card { background: white; padding: 20px; border-radius: 15px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.04); border-top: 3px solid var(--aura-gold); }
+        .u-card i { font-size: 24px; color: var(--aura-purple); margin-bottom: 10px; }
+        .u-card h4 { margin: 10px 0 5px; color: #555; }
+        .u-card span { font-size: 20px; font-weight: bold; color: var(--aura-purple); }
+
+        .recent-orders { margin-top: 30px; background: white; padding: 25px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.04); }
+    </style>
+</head>
+<body>
+
+<nav class="nav">
+    <a href="index.html" class="logo">Aura Beauty</a>
+    <a href="index.html" style="text-decoration: none; color: var(--aura-purple); font-weight: 600;">Shop More</a>
+</nav>
+
+<div class="container">
+    <aside class="user-sidebar">
+        <div class="user-info">
+            <i class="fa-solid fa-user"></i>
+            <h3 id="userName">Lovely User</h3>
+            <span style="font-size: 13px; color: #888;">Premium Member</span>
+        </div>
+        <nav class="side-menu">
+            <a href="#" class="active"><i class="fa-solid fa-house"></i> My Dashboard</a>
+            <a href="my-orders.html"><i class="fa-solid fa-bag-shopping"></i> My Orders</a>
+            <a href="#"><i class="fa-solid fa-heart"></i> Wishlist</a>
+            <a href="#"><i class="fa-solid fa-location-dot"></i> Addresses</a>
+            <a href="index.html" style="margin-top: 20px; color: #e74c3c;"><i class="fa-solid fa-sign-out"></i> Logout</a>
+        </nav>
+    </aside>
+
+    <main>
+        <div class="welcome-msg">
+            <h1>Hello, Beautiful! ✨</h1>
+            <p>Welcome back to your Aura profile. Track your glow-up items here.</p>
+        </div>
+
+        <div class="user-cards">
+            <div class="u-card">
+                <i class="fa-solid fa-box-open"></i>
+                <h4>Total Orders</h4>
+                <span id="orderCount">0</span>
+            </div>
+            <div class="u-card">
+                <i class="fa-solid fa-wallet"></i>
+                <h4>Wallet Balance</h4>
+                <span>₹500</span>
+            </div>
+            <div class="u-card">
+                <i class="fa-solid fa-star"></i>
+                <h4>Aura Points</h4>
+                <span>120</span>
+            </div>
+        </div>
+
+        <div class="recent-orders">
+            <h3 style="font-family: 'Playfair Display';">Quick View</h3>
+            <p style="color: #888;">Check your <a href="my-orders.html" style="color: var(--aura-purple);">Full Order History</a> to see detailed tracking status.</p>
+        </div>
+    </main>
+</div>
+
+<script>
+    // PostgreSQL database-la irunthu intha specific user-oda order count-ai fetch panni load pannanum
+    async function loadUserDetails() {
+        try {
+            // Ippo dummy-ah 0 iruku, neenga backend connect pannathum real data varum
+            // Example: const response = await fetch('/api/user/orders-count');
+            document.getElementById('orderCount').innerText = "5"; 
+        } catch (e) { console.log(e); }
+    }
+    window.onload = loadUserDetails;
+</script>
+
+</body>
+</html>

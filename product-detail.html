@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aura Beauty | Product Detail</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root { 
+            --purple: #632e8a; 
+            --gold: #b89655; 
+            --bg: #fdfaf5; 
+            --white: #ffffff; 
+        }
+
+        body { margin: 0; font-family: 'Outfit', sans-serif; background: var(--white); color: #333; }
+
+        /* HEADER (Minimized version) */
+        .header {
+            height: 70px; display: flex; justify-content: space-between; align-items: center;
+            padding: 0 50px; border-bottom: 1px solid #eee;
+        }
+        .logo { font-size: 24px; font-family: 'Playfair Display'; color: var(--purple); text-decoration: none; }
+        .logo span { color: var(--gold); }
+
+        /* PRODUCT PAGE LAYOUT */
+        .container {
+            max-width: 1200px; margin: 50px auto; display: flex; gap: 60px; padding: 0 20px;
+        }
+
+        /* LEFT: IMAGE GALLERY */
+        .product-gallery { flex: 1.2; }
+        .main-img { 
+            width: 100%; height: 500px; object-fit: cover; border-radius: 25px; 
+            background: var(--bg); border: 1px solid #f0f0f0;
+        }
+        .thumbnails { display: flex; gap: 15px; margin-top: 20px; }
+        .thumb { 
+            width: 80px; height: 80px; border-radius: 12px; object-fit: cover; 
+            cursor: pointer; border: 2px solid transparent; transition: 0.3s;
+        }
+        .thumb.active { border-color: var(--purple); }
+
+        /* RIGHT: PRODUCT INFO */
+        .product-info { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+        .category { text-transform: uppercase; letter-spacing: 2px; font-size: 12px; color: var(--gold); font-weight: 600; }
+        .product-title { font-family: 'Playfair Display'; font-size: 42px; margin: 10px 0; color: var(--purple); }
+        .rating { color: #ffc107; font-size: 14px; margin-bottom: 20px; }
+        .rating span { color: #888; margin-left: 10px; }
+        .price { font-size: 28px; font-weight: 600; color: #333; margin-bottom: 25px; }
+        .description { line-height: 1.7; color: #666; margin-bottom: 30px; }
+
+        /* ACTIONS */
+        .qty-selector { display: flex; align-items: center; gap: 15px; margin-bottom: 30px; }
+        .qty-btn { 
+            width: 35px; height: 35px; border: 1px solid #ddd; background: white; 
+            border-radius: 50%; cursor: pointer; transition: 0.3s;
+        }
+        .qty-btn:hover { border-color: var(--purple); color: var(--purple); }
+
+        .action-btns { display: flex; gap: 15px; }
+        .add-cart { 
+            flex: 2; background: var(--purple); color: white; border: none; 
+            padding: 18px; border-radius: 50px; font-weight: 600; cursor: pointer; 
+            transition: 0.3s; box-shadow: 0 10px 20px rgba(99, 46, 138, 0.2);
+        }
+        .add-cart:hover { transform: translateY(-3px); opacity: 0.9; }
+        .wishlist-btn { 
+            flex: 0.5; border: 1px solid #eee; border-radius: 50px; background: white; 
+            cursor: pointer; font-size: 20px; transition: 0.3s;
+        }
+        .wishlist-btn:hover { color: #e91e63; border-color: #e91e63; }
+
+        /* BENEFITS STRIP */
+        .benefits { 
+            display: flex; gap: 30px; margin-top: 40px; padding-top: 30px; 
+            border-top: 1px solid #eee;
+        }
+        .benefit-item { font-size: 13px; color: #777; display: flex; align-items: center; gap: 8px; }
+        .benefit-item i { color: var(--gold); }
+
+        @media (max-width: 900px) {
+            .container { flex-direction: column; }
+            .product-info { text-align: center; align-items: center; }
+        }
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <a href="#" class="logo"><span>Aura</span> Beauty</a>
+    <div style="display:flex; gap:20px;">
+        <i class="fa fa-search"></i>
+        <i class="fa fa-cart-shopping"></i>
+    </div>
+</header>
+
+<div class="container">
+    <div class="product-gallery">
+        <img src="https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=800" class="main-img" id="mainImg">
+        <div class="thumbnails">
+            <img src="https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=200" class="thumb active" onclick="changeImg(this)">
+            <img src="https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=200" class="thumb" onclick="changeImg(this)">
+            <img src="https://images.unsplash.com/photo-1556228720-195a672e8a03?w=200" class="thumb" onclick="changeImg(this)">
+        </div>
+    </div>
+
+    <div class="product-info">
+        <div class="category">Skincare • Refined Care</div>
+        <h1 class="product-title">Glow Vitamin C Serum</h1>
+        <div class="rating">
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star-half-alt"></i>
+            <span>(128 Reviews)</span>
+        </div>
+        <div class="price">₹1,299.00</div>
+        
+        <p class="description">
+            Experience the ultimate aura boost. Our refined Vitamin C serum is designed to brighten, 
+            hydrate, and revitalize your skin, leaving a natural glow that lasts all day. 
+            Infused with hyaluronic acid and rosehip oil.
+        </p>
+
+        <div class="qty-selector">
+            <button class="qty-btn" onclick="updateQty(-1)">-</button>
+            <span id="qty">1</span>
+            <button class="qty-btn" onclick="updateQty(1)">+</button>
+        </div>
+
+        <div class="action-btns">
+            <button class="add-cart">Add to Cart</button>
+            <button class="wishlist-btn"><i class="fa-regular fa-heart"></i></button>
+        </div>
+
+        <div class="benefits">
+            <div class="benefit-item"><i class="fa fa-leaf"></i> Vegan</div>
+            <div class="benefit-item"><i class="fa fa-check-circle"></i> Dermatologist Tested</div>
+            <div class="benefit-item"><i class="fa fa-shield"></i> Paraben Free</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function changeImg(element) {
+        document.getElementById('mainImg').src = element.src.replace('w=200', 'w=800');
+        document.querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
+        element.classList.add('active');
+    }
+
+    let currentQty = 1;
+    function updateQty(val) {
+        currentQty += val;
+        if(currentQty < 1) currentQty = 1;
+        document.getElementById('qty').innerText = currentQty;
+    }
+</script>
+
+</body>
+</html>

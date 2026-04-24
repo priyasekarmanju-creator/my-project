@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout | Aura Beauty</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root { --purple: #632e8a; --gold: #b89655; --bg: #f9f9fb; }
+        body { margin: 0; font-family: 'Outfit', sans-serif; background: var(--bg); color: #333; }
+        .header { height: 80px; background: white; display: flex; justify-content: center; align-items: center; border-bottom: 1px solid #eee; }
+        .logo { font-size: 26px; font-family: 'Playfair Display'; color: var(--purple); text-decoration: none; }
+        .container { max-width: 1000px; margin: 40px auto; padding: 20px; display: grid; grid-template-columns: 1fr 400px; gap: 30px; }
+        .checkout-box { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 14px; }
+        input, textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; outline: none; box-sizing: border-box; }
+        .payment-methods { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 10px; }
+        .method { border: 1px solid #ddd; padding: 15px; border-radius: 10px; cursor: pointer; text-align: center; }
+        .method.active { border-color: var(--purple); background: #f3eef7; color: var(--purple); font-weight: bold; }
+        .summary { background: white; padding: 25px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); height: fit-content; }
+        .summary-item { display: flex; justify-content: space-between; margin-bottom: 10px; }
+        .total-price { font-size: 22px; font-weight: bold; color: var(--purple); border-top: 2px solid #eee; padding-top: 15px; margin-top: 15px; }
+        .btn { background: var(--purple); color: white; border: none; padding: 15px; width: 100%; border-radius: 12px; cursor: pointer; font-weight: 600; font-size: 16px; margin-top: 20px; }
+        
+        /* Modal */
+        .modal { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); display:none; align-items:center; justify-content:center; z-index:9999; }
+        .modal-content { background:white; padding:40px; border-radius:25px; text-align:center; max-width:450px; width:90%; }
+        .order-id { background: #fdfaf5; padding: 10px; border: 1px dashed var(--gold); color: var(--gold); font-weight: bold; margin: 15px 0; }
+    </style>
+</head>
+<body>
+
+<header class="header"><a href="index.html" class="logo">Aura Beauty</a></header>
+
+<div class="container">
+    <div class="checkout-box">
+        <h2 style="font-family:'Playfair Display'; color:var(--purple);">Shipping Details</h2>
+        <div class="form-group"><label>Name</label><input type="text" id="custName" placeholder="Full Name"></div>
+        <div class="form-group"><label>Address</label><textarea id="custAddress" rows="3" placeholder="Full Address"></textarea></div>
+        <div class="form-group"><label>Phone</label><input type="tel" id="custPhone" placeholder="Mobile Number"></div>
+        <h2 style="font-family:'Playfair Display'; color:var(--purple); margin-top:30px;">Payment</h2>
+        <div class="payment-methods">
+            <div class="method active" id="upi" onclick="selectPay('UPI')">UPI / GPay</div>
+            <div class="method" id="cod" onclick="selectPay('COD')">Cash on Delivery</div>
+        </div>
+    </div>
+
+    <div class="summary">
+        <h3>Order Summary</h3>
+        <div id="cart-list"></div>
+        <div class="total-price">Total: <span id="final-price">₹0</span></div>
+        <button class="btn" onclick="placeOrder()">Confirm Order</button>
+    </div>
+</div>
+
+<div id="orderModal" class="modal">
+    <div class="modal-content">
+        <i class="fa-solid fa-circle-check" style="font-size: 50px; color: #4bb543;"></i>
+        <h2>Order Successful!</h2>
+        <div class="order-id" id="resID"></div>
+        <p id="resDetails" style="text-align: left; font-size: 14px; background: #f9f9f9; padding: 15px; border-radius: 10px;"></p>
+        <button class="btn" onclick="window.location.href='index.html'">Done</button>
+    </div>
+</div>
+
+<script>
+    let cart = JSON.parse(localStorage.getItem('aura_cart')) || [];
+    let payMethod = "UPI";
+
+    function init() {
+        const list = document.getElementById('cart-list');
+        let total = 0;
+        list.innerHTML = cart.map(item => {
+            total += item.price;
+            return `<div class="summary-item"><span>${item.name}</span><span>₹${item.price}</span></div>`;
+        }).join('');
+        document.getElementById('final-price').innerText = `₹${total}`;
+    }
+
+    function selectPay(m) {
+        payMethod = m;
+        document.getElementById('upi').classList.toggle('active', m === 'UPI');
+        document.getElementById('cod').classList.toggle('active', m === 'COD');
+    }
+
+    function placeOrder() {
+        const n = document.getElementById('custName').value;
+        const a = document.getElementById('custAddress').value;
+        const p = document.getElementById('custPhone').value;
+
+        if(!n || !a || !p) return alert("Fill all details!");
+        if(cart.length === 0) return alert("Your cart is empty!");
+
+        const oid = "AURA" + Math.floor(Math.random() * 900000 + 100000);
+        let total = cart.reduce((sum, item) => sum + item.price, 0);
+
+        // --- DATA SAVING LOGIC FOR MY-ORDERS PAGE ---
+        const newOrder = {
+            id: oid,
+            date: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
+            items: cart,
+            total: total,
+            status: "Processing",
+            customer: { name: n, phone: p, address: a },
+            payment: payMethod
+        };
+
+        let existingOrders = JSON.parse(localStorage.getItem('aura_orders')) || [];
+        existingOrders.push(newOrder);
+        localStorage.setItem('aura_orders', JSON.stringify(existingOrders));
+        // --------------------------------------------
+
+        document.getElementById('resID').innerText = "ORDER ID: #" + oid;
+        document.getElementById('resDetails').innerHTML = `<b>Ship to:</b> ${n}<br><b>Address:</b> ${a}<br><b>Payment:</b> ${payMethod}`;
+        
+        document.getElementById('orderModal').style.display = 'flex';
+        localStorage.removeItem('aura_cart');
+    }
+    window.onload = init;
+</script>
+</body>
+</html>

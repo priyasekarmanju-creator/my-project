@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Directory | Aura Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --aura-purple: #6a3093;
+            --aura-gold: #c5a059;
+            --bg: #fdfbfd;
+            --white: #ffffff;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg);
+            display: flex;
+            height: 100vh;
+        }
+
+        /* --- Sidebar --- */
+        .sidebar {
+            width: 260px;
+            background: var(--white);
+            border-right: 2px solid var(--aura-gold);
+            display: flex;
+            flex-direction: column;
+            padding: 20px 0;
+            flex-shrink: 0;
+        }
+
+        .logo-section {
+            padding: 0 25px 30px;
+            color: var(--aura-purple);
+            font-family: 'Playfair Display', serif;
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+
+        .menu-item {
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-decoration: none;
+            color: #444;
+            font-weight: 600;
+            transition: 0.3s;
+            border-left: 4px solid transparent;
+        }
+
+        .menu-item.active {
+            background: #f4eff9;
+            color: var(--aura-purple);
+            border-left: 4px solid var(--aura-gold);
+        }
+
+        /* --- Main Content --- */
+        .main-content {
+            flex-grow: 1;
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        .table-card {
+            background: var(--white);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(106, 48, 147, 0.05);
+        }
+
+        h2 {
+            font-family: 'Playfair Display';
+            color: var(--aura-purple);
+            margin-bottom: 30px;
+        }
+
+        /* --- Table Styling --- */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            padding: 15px;
+            background: #fdfaf5;
+            color: var(--aura-purple);
+            border-bottom: 2px solid #eee;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .avatar {
+            width: 35px;
+            height: 35px;
+            background: #eee;
+            color: var(--aura-purple);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-weight: bold;
+            border: 1px solid var(--aura-gold);
+        }
+
+        .role-badge {
+            background: #f4eff9;
+            color: var(--aura-purple);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="logo-section"><i class="fa-solid fa-leaf"></i> Aura Admin</div>
+        <nav>
+            <a href="dashboard.html" class="menu-item"><i class="fa-solid fa-gauge"></i> Dashboard</a>
+            <a href="admin-orders.html" class="menu-item"><i class="fa-solid fa-cart-shopping"></i> Orders</a>
+            <a href="add product.html" class="menu-item"><i class="fa-solid fa-plus"></i> Add Product</a>
+            <a href="category.html" class="menu-item"><i class="fa-solid fa-layer-group"></i> Categories</a>
+            <a href="customers.html" class="menu-item active"><i class="fa-solid fa-users"></i> Customers</a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <h2>Customer Database</h2>
+
+        <div class="table-card">
+            <table>
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Full Name</th>
+                        <th>Email Address</th>
+                        <th>Phone Number</th>
+                        <th>Joined On</th>
+                        <th>Role</th>
+                    </tr>
+                </thead>
+                <tbody id="customerList">
+                    </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script>
+        async function fetchCustomers() {
+            try {
+                // Connecting to your Node.js server on 8080
+                const response = await fetch('http://localhost:8080/api/admin/customers');
+                const customers = await response.json();
+
+                const tbody = document.getElementById('customerList');
+                if (customers.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:30px;">No customers registered yet.</td></tr>`;
+                    return;
+                }
+
+                tbody.innerHTML = customers.map(user => `
+                    <tr>
+                        <td><div class="avatar">${user.name ? user.name.charAt(0).toUpperCase() : 'U'}</div></td>
+                        <td><b>${user.name}</b></td>
+                        <td>${user.email}</td>
+                        <td>${user.phone || '<span style="color:#ccc">Not Provided</span>'}</td>
+                        <td>${new Date(user.created_at).toLocaleDateString()}</td>
+                        <td><span class="role-badge">${user.role || 'user'}</span></td>
+                    </tr>
+                `).join('');
+
+            } catch (err) {
+                console.error("Fetch Error:", err);
+                document.getElementById('customerList').innerHTML = `<tr><td colspan="6" style="text-align:center; color:red; padding:30px;">Error connecting to database!</td></tr>`;
+            }
+        }
+
+        // Run the fetch on page load
+        window.onload = fetchCustomers;
+    </script>
+</body>
+</html>

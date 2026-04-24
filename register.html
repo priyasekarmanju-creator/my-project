@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Aura Beauty | Register</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(120deg, #f3e7ff, #ffe6f0);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .card {
+            background: white;
+            padding: 35px;
+            width: 320px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 26px;
+            font-weight: bold;
+            color: #b76eff;
+            margin-bottom: 5px;
+        }
+
+        .tagline {
+            font-size: 12px;
+            color: #888;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        input {
+            width: 90%;
+            padding: 10px;
+            margin: 8px 0;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #b76eff;
+            box-shadow: 0 0 5px rgba(183,110,255,0.5);
+        }
+
+        button {
+            width: 95%;
+            padding: 10px;
+            background: linear-gradient(90deg, #b76eff, #ff7eb3);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+        }
+
+        a {
+            font-size: 13px;
+            text-decoration: none;
+            color: #b76eff;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="card">
+
+    <div class="logo">Aura Beauty</div>
+    <div class="tagline">Glow with Confidence ✨</div>
+
+    <h2>Create Account</h2>
+
+    <input id="name" placeholder="Full Name"><br>
+    <input id="email" placeholder="Email"><br>
+    <input id="password" type="password" placeholder="Password"><br>
+
+    <button onclick="register()">Register</button>
+
+    <br><br>
+    <a href="user-login.html">Already have an account?</a>
+
+</div>
+
+<script>
+async function register(){
+    const name = document.getElementById("name").value;
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+
+    await fetch("http://localhost:8080/api/user/register", {
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({name,email,password})
+    });
+
+    alert("Welcome to Aura Beauty 💜");
+    window.location="user-login.html";
+}
+</script>
+
+</body>
+</html>
